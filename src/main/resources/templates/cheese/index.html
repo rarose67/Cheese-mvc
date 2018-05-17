@@ -1,12 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org/">
-<head>
-    <meta charset="UTF-8" />
-    <title th:text="${title}"></title>
-</head>
+<head th:replace="fragments :: head"></head>
 <body>
+<nav th:replace="fragments :: navigation"></nav>
 
-    <a href="/cheese/add">Add a Cheese</a>
     <h1 th:text="${title}">List of my Cheeses!</h1>
 
     <p th:unless="${cheeses} and ${cheeses.size()}">No cheese</p>
