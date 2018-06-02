@@ -1,19 +1,15 @@
 package org.launchcode.cheesemvc.controllers;
 
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
+import org.launchcode.cheesemvc.models.Cheese;
+import org.launchcode.cheesemvc.models.CheeseData;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import java.util.HashMap;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping(value = "cheese")
 public class CheeseController {
-
-    //static ArrayList<String> cheeses = new ArrayList<>();
-    static HashMap<String, String> cheeses = new HashMap<>();
 
     public static boolean isAlpha(String text)
     {
@@ -52,7 +48,7 @@ public class CheeseController {
         //cheeses.add("Cheddar");
 
         model.addAttribute("title", title);
-        model.addAttribute("cheeses", cheeses);
+        model.addAttribute("cheeses", CheeseData.getAll());
 
         return "cheese/index";
     }
@@ -73,12 +69,13 @@ public class CheeseController {
     }
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
-    public String processAddCheeseForm(@RequestParam String cheeseName, @RequestParam String cheeseDescription)
+    public String processAddCheeseForm(@ModelAttribute Cheese newCheese)
+    //public String processAddCheeseForm(@RequestParam String cheeseName, @RequestParam String cheeseDescription)
     {
-        boolean alpha = CheeseController.isAlpha(cheeseName);
+        boolean alpha = CheeseController.isAlpha(newCheese.getCheeseName());
         String error;
 
-        if(cheeseName.equals(""))
+        if(newCheese.getCheeseName().equals(""))
         {
             error = "The Cheese name is required";
             return "redirect:add?error=" + error;
@@ -89,7 +86,8 @@ public class CheeseController {
             return "redirect:add?error=" + error;
         }
         else {
-            cheeses.put(cheeseName, cheeseDescription);
+            //Cheese new_cheese = new Cheese(cheeseName, cheeseDescription);
+            CheeseData.add(newCheese);
             return "redirect:";
         }
     }
@@ -99,16 +97,54 @@ public class CheeseController {
     {
         String title ="Remove a Cheese";
         model.addAttribute("title", title);
-        model.addAttribute("cheeses", cheeses);
+        model.addAttribute("cheeses", CheeseData.getAll());
 
         return "cheese/remove";
     }
 
     @RequestMapping(value = "remove", method = RequestMethod.POST)
-    public String processRemoveCheeseForm(@RequestParam String cheeseName)
+    public String processRemoveCheeseForm(@RequestParam int cheeseId)
     {
-        cheeses.remove(cheeseName);
+        CheeseData.remove(cheeseId);
 
         return "redirect:";
+    }
+
+    @RequestMapping(value = "edit/{cheeseId}", method = RequestMethod.GET)
+    public String displayEditForm(Model model, @PathVariable int cheeseId)
+    {
+        String title ="Edit a Cheese";
+        model.addAttribute("title", title);
+
+        Cheese changedCheese = CheeseData.getById(cheeseId);
+        model.addAttribute("cheese", changedCheese);
+        changedCheese.getCheeseDescription();
+
+        return "cheese/edit";
+    }
+
+    @RequestMapping(value = "edit", method = RequestMethod.POST)
+    public String processEditForm(@RequestParam int cheeseId, @RequestParam String name, @RequestParam String description)
+    {
+        Cheese changedCheese = CheeseData.getById(cheeseId);
+        boolean alpha = CheeseController.isAlpha(changedCheese.getCheeseName());
+        String error;
+
+        if(changedCheese.getCheeseName().equals(""))
+        {
+            error = "The Cheese name is required";
+            return "redirect:edit?error=" + error;
+        }
+        else if(!alpha)
+        {
+            error = "The Cheese name must be Alphabetic";
+            return "redirect:edit?error=" + error;
+        }
+        else
+        {
+            changedCheese.setCheeseName(name);
+            changedCheese.setCheeseDescription(description);
+            return "redirect:";
+        }
     }
 }
