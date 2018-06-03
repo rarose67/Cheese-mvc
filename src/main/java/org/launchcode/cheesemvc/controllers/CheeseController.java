@@ -3,6 +3,7 @@ package org.launchcode.cheesemvc.controllers;
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.launchcode.cheesemvc.models.Cheese;
 import org.launchcode.cheesemvc.models.CheeseData;
+import org.launchcode.cheesemvc.models.CheeseType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -62,6 +63,7 @@ public class CheeseController {
         String title ="Add a Cheese";
         model.addAttribute("title", title);
         model.addAttribute(new Cheese());
+        model.addAttribute("cheeseTypes", CheeseType.values());
 
         return "cheese/add";
     }
