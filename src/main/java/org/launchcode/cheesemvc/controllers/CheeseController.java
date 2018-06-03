@@ -5,7 +5,10 @@ import org.launchcode.cheesemvc.models.Cheese;
 import org.launchcode.cheesemvc.models.CheeseData;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping(value = "cheese")
@@ -54,42 +57,27 @@ public class CheeseController {
     }
 
     @RequestMapping(value = "add", method = RequestMethod.GET)
-    public String displayAddCheeseForm(Model model, HttpServletRequest request)
+    public String displayAddCheeseForm(Model model)
     {
         String title ="Add a Cheese";
-        String error = request.getParameter("error");
         model.addAttribute("title", title);
+        model.addAttribute(new Cheese());
 
-        if (error != null)
-        {
-            model.addAttribute("error", error);
-            //System.out.println("\n" + error + "\n" + error.length() + "\n");
-        }
         return "cheese/add";
     }
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
-    public String processAddCheeseForm(@ModelAttribute Cheese newCheese)
-    //public String processAddCheeseForm(@RequestParam String cheeseName, @RequestParam String cheeseDescription)
+    public String processAddCheeseForm(@ModelAttribute @Valid  Cheese newCheese, Errors errors, Model model)
     {
-        boolean alpha = CheeseController.isAlpha(newCheese.getCheeseName());
-        String error;
+        if (errors.hasErrors())
+        {
+            String title ="Add a Cheese";
+            model.addAttribute("title", title);
 
-        if(newCheese.getCheeseName().equals(""))
-        {
-            error = "The Cheese name is required";
-            return "redirect:add?error=" + error;
+            return "cheese/add";
         }
-        else if(!alpha)
-        {
-            error = "The Cheese name must be Alphabetic";
-            return "redirect:add?error=" + error;
-        }
-        else {
-            //Cheese new_cheese = new Cheese(cheeseName, cheeseDescription);
             CheeseData.add(newCheese);
             return "redirect:";
-        }
     }
 
     @RequestMapping(value = "remove", method = RequestMethod.GET)
@@ -111,34 +99,36 @@ public class CheeseController {
     }
 
     @RequestMapping(value = "edit/{cheeseId}", method = RequestMethod.GET)
-    public String displayEditForm(Model model, @PathVariable int cheeseId)
+    public String displayEditForm(HttpServletRequest request, Model model, @PathVariable int cheeseId)
     {
         String title ="Edit a Cheese";
         model.addAttribute("title", title);
+        String error = request.getParameter("error");
 
         Cheese changedCheese = CheeseData.getById(cheeseId);
         model.addAttribute("cheese", changedCheese);
+        model.addAttribute("error", error);
         changedCheese.getCheeseDescription();
 
         return "cheese/edit";
     }
 
     @RequestMapping(value = "edit", method = RequestMethod.POST)
-    public String processEditForm(@RequestParam int cheeseId, @RequestParam String name, @RequestParam String description)
+    public String processEditForm(HttpServletRequest request, @RequestParam int cheeseId, @RequestParam String name, @RequestParam String description)
     {
         Cheese changedCheese = CheeseData.getById(cheeseId);
-        boolean alpha = CheeseController.isAlpha(changedCheese.getCheeseName());
+        boolean alpha = CheeseController.isAlpha(name);
         String error;
 
-        if(changedCheese.getCheeseName().equals(""))
+        if(name.equals(""))
         {
             error = "The Cheese name is required";
-            return "redirect:edit?error=" + error;
+            return "redirect:edit/" + cheeseId + "?error=" + error;
         }
         else if(!alpha)
         {
             error = "The Cheese name must be Alphabetic";
-            return "redirect:edit?error=" + error;
+            return "redirect:edit/" + cheeseId + "?error=" + error;
         }
         else
         {

@@ -1,8 +1,14 @@
 package org.launchcode.cheesemvc.models;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 public class Cheese {
 
+    @NotNull
+    @Size(min = 3, max = 15)  //validation annotations
     private String cheeseName;
+
     private String cheeseDescription;
     private int cheeseId;
     private static int nextId = 1;
