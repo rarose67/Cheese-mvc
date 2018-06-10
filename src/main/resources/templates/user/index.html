@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head th:replace="fragments :: head"></head>
+<body>
+<nav th:replace="fragments :: navigation"></nav>
+
+<h1 th:text="${title}"></h1>
+
+<p th:if="${match} == 'true'" th:text="'Welcome ' + ${name} + '!'"></p>
+<p th:if="${match} == 'false'">The password <strong>does not</strong> match.</p>
+
+<p th:unless="${users} and ${users.size()}">No users</p>
+    <ul>
+        <li th:each ="user : ${users}">
+            <a th:href="@{'/user/' + ${user.getUserId()}}" th:text="${user.getUsername()}"></a>
+        </li>
+    </ul>
+</div>
+
+
+
+
+</body>
+</html>

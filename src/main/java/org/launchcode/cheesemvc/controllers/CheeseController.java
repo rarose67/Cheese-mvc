@@ -69,7 +69,7 @@ public class CheeseController {
     }
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
-    public String processAddCheeseForm(@ModelAttribute @Valid  Cheese newCheese, Errors errors, Model model)
+    public String processAddCheeseForm(@Valid  Cheese newCheese, Errors errors, Model model)
     {
         if (errors.hasErrors())
         {
