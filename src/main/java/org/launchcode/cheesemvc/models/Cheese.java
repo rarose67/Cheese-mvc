@@ -17,7 +17,7 @@ public class Cheese {
 
     public Cheese() {
         this.cheeseId = nextId;
-        nextId++;
+        //nextId++;
     }
 
     public Cheese(String cheeseName, String cheeseDescription)
@@ -49,6 +49,14 @@ public class Cheese {
 
     public CheeseType getType() {
         return type;
+    }
+
+    public static int getNextId() {
+        return nextId;
+    }
+
+    public static void setNextId(int aNextId) {
+        Cheese.nextId = aNextId;
     }
 
     public void setType(CheeseType aType) {

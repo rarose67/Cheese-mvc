@@ -4,6 +4,7 @@ import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.launchcode.cheesemvc.models.MyDate;
 import org.launchcode.cheesemvc.models.User;
 import org.launchcode.cheesemvc.models.UserData;
+import org.launchcode.cheesemvc.models.UserForm;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -26,7 +27,7 @@ public class UserController {
 
         if(UserData.getAll().size() == 0)
         {
-            return "redirect:add";
+            return "redirect:user/add";
         }
         else if (name != null)
         {
@@ -50,13 +51,13 @@ public class UserController {
     {
         String title ="Add a user";
         model.addAttribute("title", title);
-        model.addAttribute(new User());
+        model.addAttribute(new UserForm());
 
         return "user/add";
     }
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
-    public String processAddUserForm(Model model, @ModelAttribute @Valid User newUser, Errors errors, String verify)
+    public String processAddUserForm(Model model, @ModelAttribute @Valid UserForm userForm, Errors errors)
     {
         if (errors.hasErrors())
         {
@@ -66,14 +67,15 @@ public class UserController {
             return "user/add";
         }
 
-        if (newUser.getPassword().equals(verify))
+        if (userForm.getPassword().equals(userForm.getVerifyPassword()))
         {
+            User newUser = new User(userForm.getUsername(), userForm.getPassword(), userForm.getEmail());
             UserData.add(newUser);
             return "redirect:/user?name=" + newUser.getUsername() + "&match=true";
         }
         else
         {
-            return "redirect:/user?name=" + newUser.getUsername() + "&match=false";
+            return "redirect:/user?name=" + userForm.getUsername() + "&match=false";
         }
     }
 
@@ -92,7 +94,6 @@ public class UserController {
 
         model.addAttribute("user", user);
         model.addAttribute("time", timeDiff);
-        System.out.println("\n\ntime:" + timeDiff + "\n");
 
 
         return "user/detail";

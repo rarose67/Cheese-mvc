@@ -1,17 +1,13 @@
 package org.launchcode.cheesemvc.models;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.util.Date;
 //import java.util.regex.Pattern;
 
-public class User {
-
-    //Regular expression used for email validation
-    //private static Pattern regex = Pattern.compile("[\\w+?]@[\\w+?]+\\.\\w+?");
-    private int userId;
+public class UserForm {
 
     @NotNull
     @Size(min = 5, max = 15)
@@ -32,44 +28,14 @@ public class User {
     //@Email(regexp = "[\\w+?]@[\\w+?]+\\.\\w+?")
     private String email;
 
-    private Date date;
-    private static int nextId = 1;
 
-    public User() {
-        this.userId = nextId;
-        nextId++;
-        this.date = new Date();
-    }
+    public UserForm() {}
 
-    public User(String username, String password, String email) {
+    public UserForm(String username, String password, String email) {
         this();
         this.username = username;
         this.password = password;
         this.email = email;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date aDate) {
-        this.date = aDate;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int aId) {
-        this.userId = aId;
-    }
-
-    public static int getNextId() {
-        return nextId;
-    }
-
-    public static void setNextId(int aNextId) {
-        User.nextId = aNextId;
     }
 
     public String getUsername() {

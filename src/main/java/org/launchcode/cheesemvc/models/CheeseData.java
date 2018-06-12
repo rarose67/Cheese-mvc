@@ -12,21 +12,25 @@ public class CheeseData {
     }
 
     public static void add(Cheese new_cheese)
+
     {
+        int id = Cheese.getNextId();
         cheeses.add(new_cheese);
+        Cheese.setNextId(id + 1);
+
     }
 
     public static Cheese getById(int id)
     {
-        Cheese currentChesse;
+        Cheese currentCheese;
 
         for (int i=0; i < cheeses.size(); i++)
         {
-            currentChesse = cheeses.get(i);
+            currentCheese = cheeses.get(i);
 
-            if(currentChesse.getCheeseId() == id)
+            if(currentCheese.getCheeseId() == id)
             {
-                return  currentChesse;
+                return  currentCheese;
             }
         }
         return null;
