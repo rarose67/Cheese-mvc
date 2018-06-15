@@ -48,9 +48,6 @@ public class CheeseController {
     {
         String title ="My Cheeses";
 
-        //cheeses.add("American");
-        //cheeses.add("Cheddar");
-
         model.addAttribute("title", title);
         model.addAttribute("cheeses", CheeseData.getAll());
 
@@ -109,14 +106,14 @@ public class CheeseController {
 
         Cheese changedCheese = CheeseData.getById(cheeseId);
         model.addAttribute("cheese", changedCheese);
+        model.addAttribute("cheeseTypes", CheeseType.values());
         model.addAttribute("error", error);
-        changedCheese.getCheeseDescription();
 
         return "cheese/edit";
     }
 
     @RequestMapping(value = "edit", method = RequestMethod.POST)
-    public String processEditForm(HttpServletRequest request, @RequestParam int cheeseId, @RequestParam String name, @RequestParam String description)
+    public String processEditForm(HttpServletRequest request, @RequestParam int cheeseId, @RequestParam String name, @RequestParam CheeseType type, @RequestParam String description)
     {
         Cheese changedCheese = CheeseData.getById(cheeseId);
         boolean alpha = CheeseController.isAlpha(name);
@@ -136,6 +133,7 @@ public class CheeseController {
         {
             changedCheese.setCheeseName(name);
             changedCheese.setCheeseDescription(description);
+            changedCheese.setType(type);
             return "redirect:";
         }
     }
